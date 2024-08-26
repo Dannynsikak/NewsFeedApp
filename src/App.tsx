@@ -1,25 +1,53 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import { useAppSelector } from "./app/hooks";
+import { Navbar } from "./components/Navbar";
+import { LoginPage } from "./features/auth/LoginPage";
+import {
+  PostList,
+  // AddPostForm,
+  ViewPost,
+  EditPostForm,
+} from "./features/posts/index";
+import {} from "./features/posts/ViewPost";
+import { selectCurrentUsername } from "./features/auth/authSlice";
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const username = useAppSelector(selectCurrentUsername);
+
+  if (!username) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Navbar />
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route
+            path="/*"
+            element={
+              <ProtectedRoute>
+                <Routes>
+                  <Route path="/posts" element={<PostList />} />
+                  <Route path="/posts/:postId" element={<ViewPost />} />
+                  <Route path="/editPost/:postId" element={<EditPostForm />} />
+                </Routes>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
