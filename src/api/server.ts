@@ -24,7 +24,7 @@ function delay(ms: number) {
 // a consistent set of users / entries each time the page loads.
 // This can be reset by deleting this localStorage value,
 // or turned off by setting `useSeededRNG` to false.
-let useSeededRNG = true;
+let useSeededRNG = false;
 
 if (useSeededRNG) {
   let randomSeedString = localStorage.getItem("randomTimestampSeed");

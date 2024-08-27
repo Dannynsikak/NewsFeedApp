@@ -8,13 +8,14 @@ import { useAppSelector } from "./app/hooks";
 import { Navbar } from "./components/Navbar";
 import { LoginPage } from "./features/auth/LoginPage";
 import {
-  PostList,
+  // PostList,
   // AddPostForm,
   ViewPost,
   EditPostForm,
 } from "./features/posts/index";
 import {} from "./features/posts/ViewPost";
 import { selectCurrentUsername } from "./features/auth/authSlice";
+import { PostsMainPage } from "./features/posts/PostMainPage";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const username = useAppSelector(selectCurrentUsername);
@@ -38,7 +39,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <Routes>
-                  <Route path="/posts" element={<PostList />} />
+                  <Route path="/posts" element={<PostsMainPage />} />
                   <Route path="/posts/:postId" element={<ViewPost />} />
                   <Route path="/editPost/:postId" element={<EditPostForm />} />
                 </Routes>

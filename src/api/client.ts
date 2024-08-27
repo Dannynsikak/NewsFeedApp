@@ -1,6 +1,3 @@
-// A tiny wrapper around fetch(), borrowed from
-// https://kentcdodds.com/blog/replace-axios-with-a-simple-custom-fetch-wrapper
-
 interface ClientResponse<T> {
   status: number;
   data: T;
@@ -27,10 +24,25 @@ export async function client<T>(
     config.body = JSON.stringify(body);
   }
 
-  let data;
+  let response: Response;
+  let data: T;
+
   try {
-    const response = await window.fetch(endpoint, config);
-    data = await response.json();
+    response = await window.fetch(endpoint, config);
+
+    // Try to parse the response body as JSON
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      // If JSON parsing fails, handle the error
+      if (response.ok) {
+        return Promise.reject(
+          `Response is not valid JSON: ${response.statusText}`
+        );
+      }
+      throw new Error(response.statusText);
+    }
+
     if (response.ok) {
       // Return a result object similar to Axios
       return {
@@ -40,9 +52,16 @@ export async function client<T>(
         url: response.url,
       };
     }
-    throw new Error(response.statusText);
+
+    // For non-OK responses, throw an error with status text
+    throw new Error(
+      `Error ${response.status}: ${response.statusText} - ${data}`
+    );
   } catch (err: any) {
-    return Promise.reject(err.message ? err.message : data);
+    // Handle any other errors that occur during the fetch process
+    return Promise.reject(
+      err.message || "An unknown error occurred while fetching data."
+    );
   }
 }
 
