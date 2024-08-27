@@ -15,13 +15,18 @@ const PostList = () => {
   const posts = useAppSelector(selectAllPosts);
   const postStatus = useAppSelector(selectPostsStatus);
   useEffect(() => {
+    console.log("Post status:", postStatus);
     if (postStatus === "idle") {
+      console.log("Fetching posts...");
       dispatch(fetchPosts());
     }
   }, [postStatus, dispatch]);
+  console.log("Posts from store:", posts);
+
   const orderedPosts = posts
     .slice()
     .sort((a, b) => b.date.localeCompare(a.date));
+  console.log("Ordered posts:", orderedPosts);
 
   const renderedPosts = orderedPosts.map((post) => (
     <article className="post-excerpt" key={post.id}>

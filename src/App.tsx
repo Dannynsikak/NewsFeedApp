@@ -17,14 +17,18 @@ import {} from "./features/posts/ViewPost";
 import { selectCurrentUsername } from "./features/auth/authSlice";
 import { PostsMainPage } from "./features/posts/PostMainPage";
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectedRoute = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactElement | null => {
   const username = useAppSelector(selectCurrentUsername);
 
   if (!username) {
     return <Navigate to="/" replace />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 function App() {
